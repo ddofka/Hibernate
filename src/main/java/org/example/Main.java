@@ -48,7 +48,6 @@ public class Main {
     }
 
     private static void printExistingPayemtns(Session session) {
-        List<Comment> allComments = getAllComments(session);
-        allComments.forEach(System.out::println);
+        getAllComments(session).forEach(System.out::println);
     }
 }
