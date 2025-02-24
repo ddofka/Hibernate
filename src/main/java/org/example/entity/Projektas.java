@@ -13,8 +13,7 @@ import java.util.List;
 public class Projektas {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String projektas;
     @OneToMany(mappedBy = "projektas", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Darbuotojas> darbuotojai = new ArrayList<>();

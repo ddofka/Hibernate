@@ -13,8 +13,7 @@ import java.util.List;
 public class Skyrius {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String skyrius;
     @OneToMany(mappedBy = "dep", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Darbuotojas> darbuotojai = new ArrayList<>();
