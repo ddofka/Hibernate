@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.entity.Comment;
+import org.example.entity.Darbuotojas;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -19,16 +20,26 @@ public class Main {
         try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
             try (Session session = factory.openSession()) {
                 Transaction tx = session.beginTransaction();
-                for (int i = 0; i < 10; i++) {
-                    Comment comment = new Comment();
-                    comment.setAuthor(baseAuthor+=letterToAdd);
-                    comment.setContent(baseContent+=contentToAdd);
-                    session.save(comment);
+                for (int i = 0; i < 5; i++) {
+                    Darbuotojas darbuotojas = new Darbuotojas();
+                    darbuotojas.setName("Jonas"+i);
+                    darbuotojas.setLastName("Jonaitis"+i);
+                    int rnd = 0+i;
+                    darbuotojas.setPersonalCode(12345678900L +rnd);
+                    session.save(darbuotojas);
                 }
-                printExistingPayemtns(session);
-                int count = updateCommentContentById(session,"Naujas komentaro turinys",1);
-                System.out.println(count + " comment updated!");
                 tx.commit();
+//                Transaction tx = session.beginTransaction();
+//                for (int i = 0; i < 5; i++) {
+//                    Comment comment = new Comment();
+//                    comment.setAuthor(baseAuthor+=letterToAdd);
+//                    comment.setContent(baseContent+=contentToAdd);
+//                    session.save(comment);
+//                }
+//                printExistingPayemtns(session);
+//                int count = updateCommentContentById(session,"Naujas komentaro turinys",1);
+//                System.out.println(count + " comment updated!");
+//                tx.commit();
             }
         }
 

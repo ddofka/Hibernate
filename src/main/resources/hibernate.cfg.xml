@@ -7,13 +7,17 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_testing</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_generate</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">12345678</property>
 
         <!-- Hibernate properties -->
         <!--        <property name="hibernate.show_sql">true</property>-->
         <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
-        <mapping class="org.example.entity.Comment"/>
+        <property name="hibernate.hbm2ddl.auto">create</property>
+        <!--        <mapping class="org.example.entity.Comment"/>-->
+        <mapping class="org.example.entity.Skyrius"/>
+        <mapping class="org.example.entity.Projektas"/>
+        <mapping class="org.example.entity.Darbuotojas"/>
     </session-factory>
 </hibernate-configuration>
