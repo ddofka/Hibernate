@@ -16,8 +16,8 @@
         <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
         <property name="hibernate.hbm2ddl.auto">create</property>
         <!--        <mapping class="org.example.entity.Comment"/>-->
-        <mapping class="org.example.entity.Skyrius"/>
-        <mapping class="org.example.entity.Projektas"/>
-        <mapping class="org.example.entity.Darbuotojas"/>
+        <mapping class="org.example.entity.Department"/>
+        <mapping class="org.example.entity.Project"/>
+        <mapping class="org.example.entity.Worker"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,15 +1,17 @@
 package org.example;
 
 import org.example.entity.Comment;
-import org.example.entity.Darbuotojas;
-import org.example.entity.Projektas;
-import org.example.entity.Skyrius;
+import org.example.entity.Worker;
+import org.example.entity.Project;
+import org.example.entity.Department;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import javax.swing.*;
+import java.awt.desktop.QuitResponse;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,58 +24,76 @@ public class Main {
         try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
             try (Session session = factory.openSession()) {
                 Transaction tx = session.beginTransaction();
+
+                Department department = new Department();
+                department.setId(1);
+                department.setDepartment("Programavimas");
+                session.save(department);
+                Department department1 = new Department();
+                department1.setId(2);
+                department1.setDepartment("Testavimas");
+                session.save(department1);
+                Department department2 = new Department();
+                department2.setId(3);
+                department2.setDepartment("HR");
+                session.save(department2);
+                Department department3 = new Department();
+                department3.setId(4);
+                department3.setDepartment("Marketingas");
+                session.save(department3);
+                Department department4 = new Department();
+                department4.setId(5);
+                department4.setDepartment("Dizainas");
+                session.save(department4);
+
+                Project project = new Project();
+                project.setId(3);
+                project.setProject("RndProject");
+                session.save(project);
+                Project project1 = new Project();
+                project1.setId(4);
+                project1.setProject("Almanac");
+                session.save(project1);
+                Project project2 = new Project();
+                project2.setId(5);
+                project2.setProject("Grok");
+                session.save(project2);
+                Project project3 = new Project();
+                project3.setId(6);
+                project3.setProject("SEEKdeep");
+                session.save(project3);
+                Project project4 = new Project();
+                project4.setId(7);
+                project4.setProject("Clautsy");
+                session.save(project4);
+
                 for (int i = 0; i < 5; i++) {
-                    Darbuotojas darbuotojas = new Darbuotojas();
-                    darbuotojas.setName("Jonas"+i);
-                    darbuotojas.setLastName("Jonaitis"+i);
+                    Worker worker = new Worker();
+                    worker.setName("Jonas"+i);
+                    worker.setLastName("Jonaitis"+i);
+                    worker.setProject(project2);
                     int rnd = 0+i;
-                    darbuotojas.setPersonalCode(12345678900L +rnd);
-                    session.save(darbuotojas);
+                    worker.setPersonalCode(12345678900L +rnd);
+                    session.save(worker);
                 }
-                Skyrius skyrius = new Skyrius();
-                skyrius.setId(1);
-                skyrius.setSkyrius("Programavimas");
-                session.save(skyrius);
-                Skyrius skyrius1 = new Skyrius();
-                skyrius1.setId(2);
-                skyrius1.setSkyrius("Testavimas");
-                session.save(skyrius1);
-                Skyrius skyrius2 = new Skyrius();
-                skyrius2.setId(3);
-                skyrius2.setSkyrius("HR");
-                session.save(skyrius2);
-                Skyrius skyrius3 = new Skyrius();
-                skyrius3.setId(4);
-                skyrius3.setSkyrius("Marketingas");
-                session.save(skyrius3);
-                Skyrius skyrius4 = new Skyrius();
-                skyrius4.setId(5);
-                skyrius4.setSkyrius("Dizainas");
-                session.save(skyrius4);
 
-                Projektas projektas = new Projektas();
-                projektas.setId(3);
-                projektas.setProjektas("RndProject");
-                session.save(projektas);
-                Projektas projektas1 = new Projektas();
-                projektas1.setId(4);
-                projektas1.setProjektas("Almanac");
-                session.save(projektas1);
-                Projektas projektas2 = new Projektas();
-                projektas2.setId(5);
-                projektas2.setProjektas("Grok");
-                session.save(projektas2);
-                Projektas projektas3 = new Projektas();
-                projektas3.setId(6);
-                projektas3.setProjektas("SEEKdeep");
-                session.save(projektas3);
-                Projektas projektas4 = new Projektas();
-                projektas4.setId(7);
-                projektas4.setProjektas("Clautsy");
-                session.save(projektas4);
+                Worker worker = new Worker();
+                worker.setName("Antanas");
+                worker.setPersonalCode(99988874561L);
+                worker.setProject(project3);
+                session.save(worker);
 
+                assingSameProjectToAllWorkers(session);
+
+                System.out.println(worker.getProject());
+
+                everyOtherPorjectNameUpdate(session);
 
                 tx.commit();
+
+                printExistingWorkers(session);
+                printAllProjects(session);
+
 //                Transaction tx = session.beginTransaction();
 //                for (int i = 0; i < 5; i++) {
 //                    Comment comment = new Comment();
@@ -88,6 +108,41 @@ public class Main {
             }
         }
 
+    }
+    private static int assingSameProjectToAllWorkers(Session session){
+        Query<Worker> assignProjectToAll = session.createQuery(
+                "UPDATE Worker w SET w.project = (FROM Project p WHERE p.id = 3)"
+        );
+        return assignProjectToAll.executeUpdate();
+    }
+    private static List<Worker> getAllWorker(Session session){
+        Query<Worker> queryAllWorkers = session.createQuery("FROM Worker", Worker.class);
+        return queryAllWorkers.list();
+    }
+    private static void printExistingWorkers(Session session){
+        getAllWorker(session).forEach(System.out::println);
+    }
+
+    private static int everyOtherPorjectNameUpdate(Session session){
+        Query<Worker> updateProjectName = session.createQuery(
+                "UPDATE Project SET project = :p WHERE id = :id");
+        int getFirstId = gettAllProjects(session).getFirst().getId();
+        for (int i = 0; i < gettAllProjects(session).size(); i++) {
+            updateProjectName.setParameter("id",getFirstId+i);
+            updateProjectName.setParameter("p",gettAllProjects(session).get(i).getProject().toUpperCase());
+            updateProjectName.executeUpdate();
+            i++;
+        }
+        return updateProjectName.executeUpdate();
+    }
+
+    private static void printAllProjects(Session session){
+        gettAllProjects(session).forEach(System.out::println);
+    }
+
+    private static List<Project> gettAllProjects(Session session){
+        Query<Project> projectQuery = session.createQuery("FROM Project", Project.class);
+        return projectQuery.list();
     }
 
     private static int updateCommentContentById(Session session, String newContent, Integer id){
