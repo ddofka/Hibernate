@@ -10,11 +10,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Projektas {
+public class Department {
 
     @Id
     private Integer id;
-    private String projektas;
-    @OneToMany(mappedBy = "projektas", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Darbuotojas> darbuotojai = new ArrayList<>();
+    private String department;
+    @OneToMany(mappedBy = "dep", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Worker> workers = new ArrayList<>();
+
 }
