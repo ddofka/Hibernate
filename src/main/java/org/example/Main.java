@@ -13,6 +13,8 @@ import org.hibernate.query.Query;
 import javax.swing.*;
 import java.awt.desktop.QuitResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -21,6 +23,7 @@ public class Main {
         String letterToAdd = "s";
         String baseContent = "lorem impsum";
         String contentToAdd = " aha";
+
         try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
             try (Session session = factory.openSession()) {
                 Transaction tx = session.beginTransaction();
@@ -84,15 +87,15 @@ public class Main {
                 session.save(worker);
 
                 assingSameProjectToAllWorkers(session);
-
-                System.out.println(worker.getProject());
-
                 everyOtherPorjectNameUpdate(session);
 
                 tx.commit();
-
-                printExistingWorkers(session);
-                printAllProjects(session);
+                session.clear();
+                try (Session newSession = factory.openSession()) {
+                    printAllProjects(newSession);
+                }
+//                printExistingWorkers(session);
+//                printAllProjects(session);
 
 //                Transaction tx = session.beginTransaction();
 //                for (int i = 0; i < 5; i++) {
@@ -107,7 +110,6 @@ public class Main {
 //                tx.commit();
             }
         }
-
     }
     private static int assingSameProjectToAllWorkers(Session session){
         Query<Worker> assignProjectToAll = session.createQuery(
@@ -124,16 +126,17 @@ public class Main {
     }
 
     private static int everyOtherPorjectNameUpdate(Session session){
+        int totalUpdated = 0;
         Query<Worker> updateProjectName = session.createQuery(
                 "UPDATE Project SET project = :p WHERE id = :id");
         int getFirstId = gettAllProjects(session).getFirst().getId();
         for (int i = 0; i < gettAllProjects(session).size(); i++) {
             updateProjectName.setParameter("id",getFirstId+i);
             updateProjectName.setParameter("p",gettAllProjects(session).get(i).getProject().toUpperCase());
-            updateProjectName.executeUpdate();
+            totalUpdated += updateProjectName.executeUpdate();
             i++;
         }
-        return updateProjectName.executeUpdate();
+        return totalUpdated;
     }
 
     private static void printAllProjects(Session session){

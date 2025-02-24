@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@ToString
 public class Project {
 
     @Id
@@ -19,4 +18,10 @@ public class Project {
     private String project;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Worker> workers = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Project{id=" + id + ", project='" + project + "'}";
+        // DON'T include references to collections of other entities here
+    }
 }
